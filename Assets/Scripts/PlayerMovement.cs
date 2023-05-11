@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -21,14 +22,29 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;   // Location of player feet, where to check for ground
     private int jumpCount = 0;
     [SerializeField] private int maxExtraJumps = 1;  // Determines how many times you can air jump
+    private Vector3 homePos;
 
     // Do initialization here
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        homePos = transform.position;
     }
 
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Start");
+        }
+
+        if(transform.position.y < -10)
+        {
+            body.velocity = new Vector2(0,0);
+            transform.position = homePos;
+        }
+    }
     void FixedUpdate()
     {
         // Move the physics body by the amount specified left/right.  Leave the y velocity at whatever it already is

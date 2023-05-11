@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 public class FireRocks : MonoBehaviour
 {
     public GameObject rock;     // Drag-and-drop prefab here
+    public Vector3 mousePos;
+    public Vector3 worldPosition;
 
     public void OnFireTopLeft(InputAction.CallbackContext context)
     {
@@ -49,10 +51,31 @@ public class FireRocks : MonoBehaviour
         }
     }
 
+    // public void OnFireMouse(InputAction.CallbackContext context)
+    // {
+
+    //     CreateRock(new Vector3(0, 5, 0), mousePos);
+
+    // }
+
     private void CreateRock(Vector3 location, Vector3 velocity)
     {
         GameObject spawnedRock = Instantiate(rock, location, Quaternion.identity);        // Parameters are the object, position, and rotation.
         Rigidbody2D body = spawnedRock.GetComponent<Rigidbody2D>();
-        body.velocity = velocity;                                                   // Give it a push.
+        body.velocity = velocity;
+        Destroy(spawnedRock, 5f);                                                 // Give it a push.
     }
+
+    void Update()
+    {
+        mousePos = Input.mousePosition;
+        mousePos.z = Camera.main.nearClipPlane;
+
+        worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
+        if(Input.GetMouseButtonDown(0))
+        {
+            CreateRock(new Vector3(0,6,0), worldPosition);
+        }
+    }
+
 }
